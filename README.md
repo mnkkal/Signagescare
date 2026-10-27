@@ -1,0 +1,2 @@
+# Signagescare
+AI powered CRM
