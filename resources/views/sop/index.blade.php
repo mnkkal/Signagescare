@@ -2,12 +2,12 @@
     <div class="space-y-6 max-w-7xl mx-auto">
 
         <!-- Page Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-3">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900">Signage Operations & SOP Engine</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Signage Operations & SOP Engine</h1>
                 <p class="text-xs text-slate-500 mt-0.5">Standard Operating Procedure pipeline: Sales &rarr; Recce &rarr; Design &rarr; Fabrication &rarr; Production &rarr; Dispatch &rarr; Installation &rarr; Handover</p>
             </div>
-            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 self-start sm:self-auto">
                 10-Stage SOP Standard
             </span>
         </div>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-xs min-w-[640px]">
                     <thead class="bg-slate-50 text-slate-500 font-semibold uppercase text-[10px] border-b border-slate-100">
                         <tr>
                             <th class="py-3 px-4">Project Code</th>

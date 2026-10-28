@@ -3,7 +3,7 @@
 
         <!-- Page Header -->
         <div class="pb-4 border-b border-slate-200">
-            <h1 class="text-2xl font-bold text-slate-900">Signage Care Support Desk</h1>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Signage Care Support Desk</h1>
             <p class="text-xs text-slate-500 mt-0.5">Direct 24/7 helpline, emergency breakdown escalation, and operational assistance</p>
         </div>
 

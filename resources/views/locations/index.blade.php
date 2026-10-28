@@ -2,12 +2,12 @@
     <div class="space-y-6 max-w-7xl mx-auto" x-data="{ showModal: false }">
 
         <!-- Page Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-3">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900">My Locations & Branches</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-900">My Locations & Branches</h1>
                 <p class="text-xs text-slate-500 mt-0.5">Manage multi-location retail stores, assigned store managers, and covered signage facades</p>
             </div>
-            <button @click="showModal = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all">
+            <button @click="showModal = true" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all flex-shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Add Store Location</span>
             </button>

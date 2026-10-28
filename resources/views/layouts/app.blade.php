@@ -19,12 +19,26 @@
     </style>
 </head>
 <body class="h-full antialiased text-slate-800 bg-[#f1f5f9]">
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
+
+        <!-- Mobile Sidebar Backdrop Overlay -->
+        <div x-show="sidebarOpen"
+             @click="sidebarOpen = false"
+             x-cloak
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-slate-950/75 z-40 md:hidden backdrop-blur-sm">
+        </div>
 
         <!-- ==================== SIDEBAR ==================== -->
-        <aside class="w-64 bg-gradient-to-b from-[#091124] via-[#0d1b3e] to-[#080d1a] text-slate-300 flex flex-col flex-shrink-0 border-r border-blue-900/30 shadow-2xl z-30">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+               class="fixed inset-y-0 left-0 z-50 w-72 md:w-64 bg-gradient-to-b from-[#091124] via-[#0d1b3e] to-[#080d1a] text-slate-300 flex flex-col flex-shrink-0 border-r border-blue-900/30 shadow-2xl transition-transform duration-300 ease-in-out md:static md:translate-x-0">
             <!-- Brand Logo -->
-            <div class="px-5 pt-5 pb-4 border-b border-blue-900/40">
+            <div class="px-5 pt-5 pb-4 border-b border-blue-900/40 flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 flex-shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,6 +54,13 @@
                         </div>
                     </div>
                 </a>
+
+                <!-- Mobile Close Drawer Button -->
+                <button @click="sidebarOpen = false" class="md:hidden p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 focus:outline-none" aria-label="Close navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
 
             <!-- Navigation Links -->
@@ -65,6 +86,7 @@
                 @foreach ($navItems as $item)
                     @php $isActive = request()->routeIs($item['route'].'*'); @endphp
                     <a href="{{ route($item['route']) }}"
+                       @click="sidebarOpen = false"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 font-semibold' : 'text-slate-300/80 hover:bg-slate-800/60 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0 {{ $isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}" />
@@ -99,25 +121,50 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
 
             <!-- TOP NAVBAR -->
-            <header class="bg-gradient-to-r from-[#0d162d] via-[#101d3b] to-[#0a1224] text-white border-b border-blue-900/30 px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-md">
-                <!-- Global Search -->
-                <form action="{{ route('tickets.index') }}" method="GET" class="w-full max-w-lg">
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </span>
-                        <input type="text"
-                               name="search"
-                               value="{{ request('search') }}"
-                               placeholder="Search by Ticket ID, Location or Asset..."
-                               class="w-full pl-10 pr-4 py-2 bg-slate-900/60 border border-blue-900/40 rounded-full text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
-                    </div>
-                </form>
+            <header class="bg-gradient-to-r from-[#0d162d] via-[#101d3b] to-[#0a1224] text-white border-b border-blue-900/30 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-md">
+                <div class="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                    <!-- Mobile Hamburger Button -->
+                    <button @click="sidebarOpen = true"
+                            class="md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/80 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-shrink-0"
+                            aria-label="Open sidebar menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
 
-                <!-- Right Controls: Notification & User Profile -->
-                <div class="flex items-center gap-4">
+                    <!-- Mobile Brand Title -->
+                    <a href="{{ route('dashboard') }}" class="md:hidden flex items-center gap-2 flex-shrink-0">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-black text-xs shadow-md">
+                            SC
+                        </div>
+                        <span class="font-black text-white text-sm tracking-wide">SIGNAGE<span class="text-blue-400 font-extrabold">CARE</span></span>
+                    </a>
+
+                    <!-- Global Search (Desktop & Tablet) -->
+                    <form action="{{ route('tickets.index') }}" method="GET" class="hidden sm:block w-full max-w-xs md:max-w-md lg:max-w-lg">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                            <input type="text"
+                                   name="search"
+                                   value="{{ request('search') }}"
+                                   placeholder="Search Ticket ID, Location, Asset..."
+                                   class="w-full pl-10 pr-4 py-2 bg-slate-900/60 border border-blue-900/40 rounded-full text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Controls: Quick Request, Notification & User Profile -->
+                <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                    <!-- Quick Service Request button on mobile/tablet -->
+                    <a href="{{ route('tickets.create') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-sm transition-all" title="Raise Service Request">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span class="hidden sm:inline">New Request</span>
+                    </a>
+
                     <!-- Notification Bell with counter -->
                     <a href="{{ route('tickets.index', ['status' => 'Open']) }}" class="relative p-2 text-slate-300 hover:text-white rounded-full hover:bg-slate-800/60 transition-colors" title="Pending Tickets">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,21 +175,21 @@
                         </span>
                     </a>
 
-                    <!-- Current User Pill (Store Manager - Lenskart Nagpur) -->
-                    <div class="relative flex items-center gap-3 pl-3 border-l border-slate-700/60" x-data="{ open: false }">
-                        <button @click="open = !open" class="flex items-center gap-2.5 text-left focus:outline-none group">
-                            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-400/40 shadow-sm flex-shrink-0">
+                    <!-- Current User Pill -->
+                    <div class="relative flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-slate-700/60" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 text-left focus:outline-none group">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-400/40 shadow-sm flex-shrink-0">
                                 {{ strtoupper(substr(Auth::user()->name ?? 'SK', 0, 2)) }}
                             </div>
                             <div class="hidden md:block">
-                                <div class="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors leading-tight">
+                                <div class="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors leading-tight truncate max-w-[120px]">
                                     {{ Auth::user()->name ?? 'Store Manager' }}
                                 </div>
-                                <div class="text-[11px] text-slate-400 leading-tight">
+                                <div class="text-[11px] text-slate-400 leading-tight truncate max-w-[120px]">
                                     {{ Auth::user()->client->name ?? 'Lenskart Nagpur' }}
                                 </div>
                             </div>
-                            <svg class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
@@ -172,7 +219,7 @@
 
             <!-- FLASH ALERTS -->
             @if (session('status'))
-                <div class="mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 rounded-xl text-xs font-medium flex items-center justify-between">
+                <div class="mx-3 sm:mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 rounded-xl text-xs font-medium flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         <span>{{ session('status') }}</span>
@@ -181,7 +228,7 @@
             @endif
 
             @if (session('error'))
-                <div class="mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-800 rounded-xl text-xs font-medium flex items-center justify-between">
+                <div class="mx-3 sm:mx-6 mt-4 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-800 rounded-xl text-xs font-medium flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         <span>{{ session('error') }}</span>
@@ -190,9 +237,12 @@
             @endif
 
             <!-- PAGE CONTENT INJECTION -->
-            <main class="flex-1 p-6">
+            <main class="flex-1 p-3 sm:p-6 overflow-x-hidden">
                 {{ $slot }}
             </main>
+        </div>
+    </div>
+</body>
         </div>
     </div>
 </body>

@@ -2,9 +2,9 @@
     <div class="space-y-6 max-w-7xl mx-auto">
 
         <!-- Page Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-3">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900">Active Sessions & Security</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Active Sessions & Security</h1>
                 <p class="text-xs text-slate-500 mt-0.5">Manage browser sessions, active devices, and inspect security audit logs</p>
             </div>
             <div class="flex items-center gap-2">
@@ -26,8 +26,8 @@
 
             <div class="divide-y divide-slate-100">
                 @foreach ($sessions as $session)
-                    <div class="py-4 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
+                    <div class="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 sm:gap-4">
                             <div class="w-10 h-10 rounded-xl {{ $session->is_current_device ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-500' }} flex items-center justify-center flex-shrink-0">
                                 @if (str_contains($session->platform, 'Mobile') || str_contains($session->platform, 'iPhone'))
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>

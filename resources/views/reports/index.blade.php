@@ -2,12 +2,12 @@
     <div class="space-y-6 max-w-7xl mx-auto">
 
         <!-- Page Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-3">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900">Reports & Analytics Downloads</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Reports & Analytics Downloads</h1>
                 <p class="text-xs text-slate-500 mt-0.5">Comprehensive audit reports, SLA compliance, location-wise service tickets, and CSV export</p>
             </div>
-            <a href="{{ route('reports.export-tickets') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 shadow-sm transition-all">
+            <a href="{{ route('reports.export-tickets') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 shadow-sm transition-all flex-shrink-0">
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span>Export Tickets CSV</span>
             </a>
@@ -73,7 +73,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-xs min-w-[580px]">
                     <thead class="bg-slate-50 text-slate-500 font-semibold uppercase text-[10px] border-b border-slate-100">
                         <tr>
                             <th class="py-3 px-4">Store Location</th>

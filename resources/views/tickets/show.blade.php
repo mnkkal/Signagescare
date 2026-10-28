@@ -2,11 +2,11 @@
     <div class="max-w-6xl mx-auto space-y-6">
 
         <!-- Header -->
-        <div class="flex flex-wrap items-center justify-between pb-4 border-b border-slate-200 gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-4">
             <div>
                 <a href="{{ route('tickets.index') }}" class="text-xs font-semibold text-blue-600 hover:underline mb-1 inline-block">&larr; Back to Tickets</a>
-                <div class="flex items-center gap-3">
-                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">{{ $ticket->ticket_number }}</h1>
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{{ $ticket->ticket_number }}</h1>
                     <span class="px-2.5 py-0.5 rounded text-xs font-bold border {{ $ticket->priority_badge_color }}">
                         {{ $ticket->priority }}
                     </span>
@@ -16,7 +16,7 @@
                 </div>
                 <p class="text-xs text-slate-500 mt-1">Location: <span class="font-bold text-slate-800">{{ $ticket->location->name ?? 'General' }}</span> &middot; Raised: {{ $ticket->created_at->format('d M Y, h:i A') }}</p>
             </div>
-            <div class="text-right">
+            <div class="text-left sm:text-right">
                 <div class="text-xs text-slate-500 font-semibold">Assigned Technician</div>
                 <div class="text-sm font-bold text-slate-900">{{ $ticket->technician->name ?? 'Unassigned' }}</div>
             </div>
