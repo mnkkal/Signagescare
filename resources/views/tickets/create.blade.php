@@ -8,7 +8,7 @@
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-            <form action="{{ route('tickets.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5 text-xs">
+            <form action="{{ route('tickets.store') }}" method="POST" enctype="multipart/form-data" data-offline-sync class="space-y-5 text-xs">
                 @csrf
 
                 <!-- Store Location -->
@@ -46,6 +46,16 @@
                             <option value="P4">P4 - Low (Cleaning / Routine Alignment)</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Billing Type -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Billing Classification</label>
+                    <select name="billing_type" class="w-full text-xs rounded-xl border-slate-300 focus:ring-blue-500">
+                        <option value="AMC Covered">Covered under AMC</option>
+                        <option value="Under Warranty">Under Manufacturer / Install Warranty</option>
+                        <option value="Chargeable">Chargeable Repair (Requires Quotation)</option>
+                    </select>
                 </div>
 
                 <!-- Problem Title -->

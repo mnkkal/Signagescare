@@ -57,6 +57,11 @@ class ClientLocation extends Model
         return $this->hasMany(Ticket::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
     public function maintenanceSchedules(): HasMany
     {
         return $this->hasMany(MaintenanceSchedule::class);

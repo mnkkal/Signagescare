@@ -1,0 +1,9 @@
+{
+    "name": "Signage Care CRM",
+    "short_name": "SignageCare",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "#091124",
+    "theme_color": "#0d162d",
+    "description": "Multi-Location Signage Service Operations & Field Technician Portal"
+}

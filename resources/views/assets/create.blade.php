@@ -76,6 +76,42 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Manufacturer / Model</label>
+                        <input type="text" name="manufacturer_model" placeholder="e.g. Samsung LED / MeanWell 400W" class="w-full text-xs rounded-xl border-slate-300" />
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Power Rating (Watts)</label>
+                        <input type="number" min="0" name="power_rating_watts" placeholder="e.g. 450" class="w-full text-xs rounded-xl border-slate-300" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Installation Date</label>
+                        <input type="date" name="installation_date" class="w-full text-xs rounded-xl border-slate-300" />
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Warranty Expiry Date</label>
+                        <input type="date" name="warranty_expiry_date" class="w-full text-xs rounded-xl border-slate-300" />
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">GPS Coordinates</label>
+                        <input type="text" name="gps_coordinates" placeholder="e.g. 21.1458, 79.0882" class="w-full text-xs rounded-xl border-slate-300" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Linked Production Job Card / SOP (Optional)</label>
+                    <select name="sop_project_id" class="w-full text-xs rounded-xl border-slate-300">
+                        <option value="">-- None --</option>
+                        @foreach ($sopProjects as $proj)
+                            <option value="{{ $proj->id }}">{{ $proj->title }} (Job #{{ $proj->id }})</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Technical Notes / Specifications</label>
                     <textarea name="notes" rows="3" placeholder="Power supply wattage, LED brand, wiring route, mounting notes..." class="w-full text-xs rounded-xl border-slate-300"></textarea>

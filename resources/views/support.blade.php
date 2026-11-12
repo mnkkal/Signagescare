@@ -15,7 +15,7 @@
                 </div>
                 <h3 class="text-sm font-bold text-slate-900">Direct Helpline</h3>
                 <p class="text-xs text-slate-500 mt-1">Immediate field coordinator connect</p>
-                <div class="text-base font-extrabold text-blue-600 mt-3">8208900802</div>
+                <div class="text-base font-extrabold text-blue-600 mt-3">{{ \App\Models\Setting::getValue('support_phone', '8208900802') }}</div>
             </div>
 
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 text-center">
@@ -24,7 +24,7 @@
                 </div>
                 <h3 class="text-sm font-bold text-slate-900">Email Dispatch Desk</h3>
                 <p class="text-xs text-slate-500 mt-1">Ticket queries & AMC accounts</p>
-                <div class="text-xs font-bold text-slate-800 mt-3">care@signagecare.in</div>
+                <div class="text-xs font-bold text-slate-800 mt-3">{{ \App\Models\Setting::getValue('support_email', 'care@signagecare.in') }}</div>
             </div>
 
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 text-center">
@@ -33,7 +33,7 @@
                 </div>
                 <h3 class="text-sm font-bold text-slate-900">Service Guarantee</h3>
                 <p class="text-xs text-slate-500 mt-1">Timely field dispatch guaranteed</p>
-                <div class="text-xs font-bold text-emerald-600 mt-3">Signagecare.in</div>
+                <div class="text-xs font-bold text-emerald-600 mt-3">{{ \App\Models\Setting::getValue('support_website', 'Signagecare.in') }}</div>
             </div>
         </div>
 

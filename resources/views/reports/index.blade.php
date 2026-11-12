@@ -117,5 +117,145 @@
             </div>
         </div>
 
+        <!-- Pilot KPI Summary Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                <div class="text-xs font-semibold text-slate-500">First-Time-Fix Rate (FTFR)</div>
+                <div class="text-2xl font-black text-emerald-600 mt-1">{{ $ftfr }}%</div>
+                <p class="text-[11px] text-slate-400 mt-1">Completed without reopen</p>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                <div class="text-xs font-semibold text-slate-500">Mean Time to Repair (MTTR)</div>
+                <div class="text-2xl font-black text-blue-600 mt-1">{{ $mttrHours }} hrs</div>
+                <p class="text-[11px] text-slate-400 mt-1">Average ticket resolution time</p>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                <div class="text-xs font-semibold text-slate-500">AMC Renewal Rate</div>
+                <div class="text-2xl font-black text-indigo-600 mt-1">{{ $amcRenewalRate }}%</div>
+                <p class="text-[11px] text-slate-400 mt-1">Active / renewed AMC contracts</p>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                <div class="text-xs font-semibold text-slate-500">Repeat-Failure Assets</div>
+                <div class="text-2xl font-black text-rose-600 mt-1">{{ $repeatFailureAssets->count() }}</div>
+                <p class="text-[11px] text-slate-400 mt-1">&ge;3 tickets in last 6 months</p>
+            </div>
+        </div>
+
+        <!-- Revenue by Client & Branch -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h3 class="text-base font-bold text-slate-900">Revenue by Client</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px]">
+                            <tr>
+                                <th class="py-3 px-4">Client</th>
+                                <th class="py-3 px-4 text-right">Billed Total (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($revenueByClient as $row)
+                                <tr>
+                                    <td class="py-3 px-4 font-semibold text-slate-800">{{ $row->name }}</td>
+                                    <td class="py-3 px-4 text-right font-bold text-emerald-700">₹{{ number_format((float) ($row->total_billed ?? 0), 2) }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="2" class="py-5 px-4 text-center text-slate-400">No invoices recorded yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h3 class="text-base font-bold text-slate-900">Revenue by Branch</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px]">
+                            <tr>
+                                <th class="py-3 px-4">Branch</th>
+                                <th class="py-3 px-4 text-right">Billed Total (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($revenueByBranch as $row)
+                                <tr>
+                                    <td class="py-3 px-4 font-semibold text-slate-800">{{ $row->name }}</td>
+                                    <td class="py-3 px-4 text-right font-bold text-blue-700">₹{{ number_format((float) ($row->total_billed ?? 0), 2) }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="2" class="py-5 px-4 text-center text-slate-400">No branch-level invoices recorded yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technician Productivity & Repeat-Failure Assets -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h3 class="text-base font-bold text-slate-900">Technician Productivity</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px]">
+                            <tr>
+                                <th class="py-3 px-4">Technician</th>
+                                <th class="py-3 px-4">Open</th>
+                                <th class="py-3 px-4">Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($technicianProductivity as $tech)
+                                <tr>
+                                    <td class="py-3 px-4 font-semibold text-slate-800">{{ $tech->name }}</td>
+                                    <td class="py-3 px-4">{{ $tech->open_tickets_count }}</td>
+                                    <td class="py-3 px-4 font-bold text-emerald-600">{{ $tech->closed_tickets_count }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="py-5 px-4 text-center text-slate-400">No technician data yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100">
+                    <h3 class="text-base font-bold text-slate-900">Repeat-Failure Assets (&ge;3 Tickets / 6 Mo)</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px]">
+                            <tr>
+                                <th class="py-3 px-4">Asset</th>
+                                <th class="py-3 px-4">Location</th>
+                                <th class="py-3 px-4">Tickets (6m)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($repeatFailureAssets as $rfa)
+                                <tr>
+                                    <td class="py-3 px-4 font-bold text-rose-700">
+                                        <a href="{{ route('assets.show', $rfa) }}" class="hover:underline">{{ $rfa->asset_tag }} &mdash; {{ $rfa->asset_name }}</a>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-600">{{ $rfa->location->name ?? '-' }}</td>
+                                    <td class="py-3 px-4 font-bold">{{ $rfa->recent_failures }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="py-5 px-4 text-center text-slate-400">No repeat-failure assets flagged.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </x-app-layout>

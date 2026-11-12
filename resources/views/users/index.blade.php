@@ -27,7 +27,7 @@
                     <thead class="bg-slate-50 text-slate-500 font-semibold uppercase text-[10px] border-b border-slate-100">
                         <tr>
                             <th class="py-3 px-4">User</th>
-                            <th class="py-3 px-4">Role</th>
+                            <th class="py-3 px-4">Role &amp; Skills</th>
                             <th class="py-3 px-4">Affiliated Brand</th>
                             <th class="py-3 px-4">Status</th>
                             <th class="py-3 px-4">Last Login</th>
@@ -52,6 +52,13 @@
                                     <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                                         {{ $u->getRoleNames()->first() ?? 'None' }}
                                     </span>
+                                    @if(!empty($u->skills))
+                                        <div class="flex flex-wrap gap-1 mt-1">
+                                            @foreach($u->skills as $skill)
+                                                <span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-700">{{ $skill }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="py-3 px-4 whitespace-nowrap text-slate-600">
                                     {{ $u->client->name ?? 'Internal Team' }}
@@ -76,6 +83,7 @@
                                             <option value="active" {{ $u->status === 'active' ? 'selected' : '' }}>Active</option>
                                             <option value="suspended" {{ $u->status === 'suspended' ? 'selected' : '' }}>Suspended</option>
                                         </select>
+                                        <input type="text" name="skills_input" value="{{ is_array($u->skills) ? implode(', ', $u->skills) : '' }}" placeholder="Skills (e.g. Electrical, High-Rise)" class="text-[11px] py-1 px-2 rounded-lg border-slate-300 w-36" />
                                         <button type="submit" class="px-2.5 py-1 text-xs font-semibold bg-slate-900 text-white rounded-lg hover:bg-slate-800">
                                             Save
                                         </button>
@@ -129,6 +137,10 @@
                                 <option value="{{ $c->id }}">{{ $c->name }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-700">Skill Tags (comma-separated, for Technicians/Vendors)</label>
+                        <input type="text" name="skills_input" class="w-full mt-1 text-xs rounded-xl border-slate-200" placeholder="e.g. Electrical, High-Rise, ACP, Neon" />
                     </div>
                     <div>
                         <label class="font-semibold text-slate-700">Temporary Password</label>

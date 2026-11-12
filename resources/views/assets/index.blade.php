@@ -100,10 +100,13 @@
                         @foreach ($assets as $asset)
                             <tr class="hover:bg-slate-50/70">
                                 <td class="py-3 px-4 font-bold text-blue-600 whitespace-nowrap">
-                                    {{ $asset->asset_tag }}
+                                    <a href="{{ route('assets.show', $asset) }}" class="hover:underline">{{ $asset->asset_tag }}</a>
+                                    @if ($asset->isRepeatFailure())
+                                        <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-800">Repeat Failure</span>
+                                    @endif
                                 </td>
                                 <td class="py-3 px-4 text-slate-900 font-semibold">
-                                    {{ $asset->asset_name }}
+                                    <a href="{{ route('assets.show', $asset) }}" class="hover:text-blue-600">{{ $asset->asset_name }}</a>
                                 </td>
                                 <td class="py-3 px-4 text-slate-600 whitespace-nowrap">
                                     {{ $asset->location->name ?? 'Nagpur' }}

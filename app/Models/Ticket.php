@@ -16,18 +16,36 @@ class Ticket extends Model
         'ticket_number',
         'client_location_id',
         'signage_asset_id',
+        'mass_incident_id',
         'reported_by_user_id',
         'assigned_technician_id',
         'priority',
         'status',
         'category',
+        'billing_type',
+        'estimated_amount',
+        'requires_client_approval',
+        'client_approved_at',
+        'client_approved_by',
         'problem_title',
         'problem_description',
         'eta_date',
         'eta_display',
         'scheduled_at',
+        'first_response_at',
+        'response_sla_minutes',
+        'resolution_sla_minutes',
+        'escalation_level',
+        'escalated_at',
         'completed_at',
         'resolution_notes',
+        'root_cause',
+        'reopen_count',
+        'reopen_reason',
+        'reopened_at',
+        'client_rating',
+        'client_feedback',
+        'rated_at',
     ];
 
     protected function casts(): array
@@ -35,7 +53,14 @@ class Ticket extends Model
         return [
             'eta_date' => 'date',
             'scheduled_at' => 'datetime',
+            'first_response_at' => 'datetime',
+            'escalated_at' => 'datetime',
             'completed_at' => 'datetime',
+            'client_approved_at' => 'datetime',
+            'reopened_at' => 'datetime',
+            'rated_at' => 'datetime',
+            'requires_client_approval' => 'boolean',
+            'estimated_amount' => 'decimal:2',
         ];
     }
 
@@ -49,6 +74,11 @@ class Ticket extends Model
         return $this->belongsTo(SignageAsset::class, 'signage_asset_id');
     }
 
+    public function massIncident(): BelongsTo
+    {
+        return $this->belongsTo(MassIncident::class);
+    }
+
     public function reportedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reported_by_user_id');
@@ -59,9 +89,53 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'assigned_technician_id');
     }
 
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'client_approved_by');
+    }
+
     public function evidence(): HasMany
     {
         return $this->hasMany(TicketEvidence::class);
+    }
+
+    public function visits(): HasMany
+    {
+        return $this->hasMany(TicketVisit::class)->latest();
+    }
+
+    public function safetyChecklists(): HasMany
+    {
+        return $this->hasMany(SafetyChecklist::class)->latest();
+    }
+
+    public function quotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class)->latest();
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class)->latest();
+    }
+
+    public function parts(): HasMany
+    {
+        return $this->hasMany(TicketPart::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(NotificationLog::class)->latest();
+    }
+
+    public function isSlaBreached(): bool
+    {
+        if (in_array($this->status, ['Completed', 'Cancelled'])) {
+            return false;
+        }
+        $limit = $this->created_at?->copy()->addMinutes($this->resolution_sla_minutes ?? 1440);
+        return $limit && now()->greaterThan($limit);
     }
 
     public function beforePhotos(): HasMany

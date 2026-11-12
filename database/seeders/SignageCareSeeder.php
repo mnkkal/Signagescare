@@ -7,9 +7,12 @@ use App\Models\AuditLog;
 use App\Models\Client;
 use App\Models\ClientLocation;
 use App\Models\MaintenanceSchedule;
+use App\Models\Setting;
 use App\Models\SignageAsset;
 use App\Models\SopChecklist;
 use App\Models\SopProject;
+use App\Models\SparePart;
+use App\Models\Supplier;
 use App\Models\Ticket;
 use App\Models\TicketEvidence;
 use App\Models\User;
@@ -29,6 +32,7 @@ class SignageCareSeeder extends Seeder
             'Operations Manager',
             'Store Manager',
             'Technician',
+            'Subcontractor / Vendor',
             'Production Supervisor',
         ];
 
@@ -82,6 +86,13 @@ class SignageCareSeeder extends Seeder
             'update ticket status',
             'upload evidence',
             'verify sop checklists',
+        ]);
+
+        $vendorRole = Role::findByName('Subcontractor / Vendor');
+        $vendorRole->syncPermissions([
+            'view dashboard',
+            'update ticket status',
+            'upload evidence',
         ]);
 
         // 2. Clients
@@ -656,7 +667,34 @@ class SignageCareSeeder extends Seeder
             }
         }
 
-        // 10. Audit Log Seed
-        AuditLog::log('system_initialized', 'System seed completed with standard roles, client, locations, assets, and SOP checklists.');
+        // 10. Default Settings, Suppliers & Spare Parts
+        Setting::setValue('company_name', 'Signages Care');
+        Setting::setValue('support_phone', '8208900802');
+        Setting::setValue('support_email', 'care@signagescare.com');
+        Setting::setValue('support_website', 'https://signagescare.com');
+        Setting::setValue('quotation_approval_threshold', '5000');
+        Setting::setValue('email_alerts_enabled', '1');
+
+        $supplier = Supplier::firstOrCreate(
+            ['name' => 'Nagpur Sign & LED Wholesale'],
+            ['contact_person' => 'Rakesh Jain', 'phone' => '+91 9823099887', 'email' => 'sales@nagpursignled.in']
+        );
+
+        $defaultParts = [
+            ['sku' => 'SMPS-12V-400W', 'name' => '12V Waterproof SMPS 400W', 'category' => 'SMPS', 'unit' => 'pcs', 'current_stock' => 25, 'min_stock_alert' => 5, 'unit_cost' => 1450],
+            ['sku' => 'LED-MOD-3W', 'name' => 'Samsung 3-LED Module Cool White', 'category' => 'LEDs', 'unit' => 'pcs', 'current_stock' => 400, 'min_stock_alert' => 50, 'unit_cost' => 22],
+            ['sku' => 'CBL-25MM-FR', 'name' => '2.5mm FR PVC Cable Roll (90m)', 'category' => 'Cables', 'unit' => 'rolls', 'current_stock' => 8, 'min_stock_alert' => 2, 'unit_cost' => 2100],
+            ['sku' => 'ACR-3MM-WHT', 'name' => '3mm Cast Opal Acrylic Sheet', 'category' => 'Acrylic', 'unit' => 'sheets', 'current_stock' => 12, 'min_stock_alert' => 3, 'unit_cost' => 3400],
+        ];
+
+        foreach ($defaultParts as $part) {
+            SparePart::firstOrCreate(
+                ['sku' => $part['sku']],
+                array_merge($part, ['supplier_id' => $supplier->id])
+            );
+        }
+
+        // 11. Audit Log Seed
+        AuditLog::log('system_initialized', 'System seed completed with standard roles, client, locations, assets, inventory, settings, and SOP checklists.');
     }
 }

@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Signage Care CRM') }} - Multi-Location Operations</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d162d">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,6 +15,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="/js/offline-sync.js" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         [x-cloak] { display: none !important; }
@@ -71,14 +74,20 @@
                         ['route' => 'tickets.create', 'label' => 'Service Request', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'],
                         ['route' => 'locations.index', 'label' => 'My Locations', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
                         ['route' => 'tickets.index', 'label' => 'Service Tickets', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                        ['route' => 'maintenance.index', 'label' => 'Preventive Maintenance', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                        ['route' => 'dispatch.index', 'label' => 'Dispatch Board', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                        ['route' => 'billing.index', 'label' => 'Billing & GST Invoices', 'icon' => 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z'],
+                        ['route' => 'maintenance.index', 'label' => 'Preventive Maintenance', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
                         ['route' => 'assets.index', 'label' => 'Asset Register', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
+                        ['route' => 'inventory.index', 'label' => 'Parts & Inventory', 'icon' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'],
+                        ['route' => 'safety.index', 'label' => 'Safety & Incidents', 'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'],
+                        ['route' => 'incidents.index', 'label' => 'Storm / Mass Incidents', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
                         ['route' => 'amc.index', 'label' => 'AMC Details', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
                         ['route' => 'sop.index', 'label' => 'Operations & SOP', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
                         ['route' => 'users.index', 'label' => 'User & Roles', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
                         ['route' => 'sessions.index', 'label' => 'Sessions & Security', 'icon' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'],
-                        ['route' => 'reports.index', 'label' => 'Reports', 'icon' => 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'],
+                        ['route' => 'reports.index', 'label' => 'Reports & Revenue', 'icon' => 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'],
                         ['route' => 'downloads.index', 'label' => 'Downloads', 'icon' => 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4'],
+                        ['route' => 'settings.index', 'label' => 'Settings & Privacy', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
                         ['route' => 'support', 'label' => 'Support Desk', 'icon' => 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z'],
                     ];
                 @endphp
@@ -107,11 +116,11 @@
                 <div class="space-y-1 text-slate-300">
                     <div class="flex items-center gap-1.5 font-medium">
                         <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                        <span>8208900802</span>
+                        <span>{{ \App\Models\Setting::getValue('support_phone', '8208900802') }}</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-slate-400">
                         <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                        <span>Signagecare.in</span>
+                        <span>{{ \App\Models\Setting::getValue('support_website', 'Signagecare.in') }}</span>
                     </div>
                 </div>
             </div>
@@ -217,6 +226,31 @@
                 </div>
             </header>
 
+            <!-- OFFLINE SYNC BANNER -->
+            <div id="offline-sync-banner" class="hidden mx-3 sm:mx-6 mt-3 p-3 bg-amber-500/15 border border-amber-500/40 text-amber-900 rounded-xl text-xs font-semibold flex items-center gap-2">
+                <svg class="w-4 h-4 text-amber-600 flex-shrink-0 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"/></svg>
+                <span id="offline-sync-text">Offline Mode active.</span>
+            </div>
+
+            <!-- DPDP ACT 2023 CONSENT BANNER -->
+            @if (Auth::check() && !Auth::user()->consent_accepted_at)
+                <div class="mx-3 sm:mx-6 mt-3 p-4 bg-blue-950 text-white rounded-2xl shadow-lg border border-blue-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div>
+                        <div class="font-bold text-cyan-300">Data Privacy &amp; Consent Notice (DPDP Act, 2023)</div>
+                        <p class="text-slate-300 mt-0.5">
+                            By using Signage Care CRM, you consent to processing store details, site photographs, and technician GPS check-in data solely for signage maintenance operations.
+                            <a href="{{ route('privacy.policy') }}" class="underline text-cyan-300 ml-1">Read Privacy Policy</a>
+                        </p>
+                    </div>
+                    <form action="{{ route('consent.accept') }}" method="POST" class="flex-shrink-0">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors">
+                            I Accept &amp; Consent
+                        </button>
+                    </form>
+                </div>
+            @endif
+
             <!-- FLASH ALERTS -->
             @if (session('status'))
                 <div class="mx-3 sm:mx-6 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 rounded-xl text-xs font-medium flex items-center justify-between">
@@ -240,9 +274,6 @@
             <main class="flex-1 p-3 sm:p-6 overflow-x-hidden">
                 {{ $slot }}
             </main>
-        </div>
-    </div>
-</body>
         </div>
     </div>
 </body>

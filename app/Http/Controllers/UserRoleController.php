@@ -31,6 +31,7 @@ class UserRoleController extends Controller
         }
 
         $users = $query->latest()->paginate(15);
+        Role::firstOrCreate(['name' => 'Subcontractor / Vendor']);
         $roles = Role::all();
         $clients = Client::where('is_active', true)->get();
 
@@ -45,14 +46,20 @@ class UserRoleController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'string', 'exists:roles,name'],
             'client_id' => ['nullable', 'exists:clients,id'],
+            'skills_input' => ['nullable', 'string', 'max:255'],
             'password' => ['required', Rules\Password::defaults()],
         ]);
+
+        $skills = $request->filled('skills_input')
+            ? array_values(array_filter(array_map('trim', explode(',', $request->skills_input))))
+            : [];
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'client_id' => $request->client_id,
+            'skills' => $skills,
             'password' => Hash::make($request->password),
             'status' => 'active',
         ]);
@@ -69,11 +76,18 @@ class UserRoleController extends Controller
         $request->validate([
             'role' => ['required', 'string', 'exists:roles,name'],
             'status' => ['required', 'in:active,inactive,suspended'],
+            'skills_input' => ['nullable', 'string', 'max:255'],
         ]);
 
         $oldRole = $user->getRoleNames()->first();
         $user->syncRoles([$request->role]);
-        $user->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+        if ($request->has('skills_input')) {
+            $updateData['skills'] = $request->filled('skills_input')
+                ? array_values(array_filter(array_map('trim', explode(',', $request->skills_input))))
+                : [];
+        }
+        $user->update($updateData);
 
         AuditLog::log('user_updated', "Updated user {$user->name}: Role from {$oldRole} to {$request->role}, status: {$request->status}.", $user);
 
