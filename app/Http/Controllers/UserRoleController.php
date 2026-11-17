@@ -15,6 +15,11 @@ class UserRoleController extends Controller
 {
     public function index(Request $request)
     {
+        $currentUser = auth()->user();
+        if ($currentUser && !$currentUser->hasRole('Super Admin')) {
+            abort(403, 'Unauthorized access to User and Role Management.');
+        }
+
         $query = User::with(['roles', 'client', 'managedLocations']);
 
         if ($request->filled('role')) {

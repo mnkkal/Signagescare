@@ -13,6 +13,11 @@ class SettingController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        if ($user && !$user->hasRole('Super Admin')) {
+            abort(403, 'Unauthorized access to System Settings.');
+        }
+
         $settings = [
             'company_name' => Setting::getValue('company_name', 'Signage Care Services Pvt. Ltd.'),
             'company_gstin' => Setting::getValue('company_gstin', '27AABCS1234F1Z5'),

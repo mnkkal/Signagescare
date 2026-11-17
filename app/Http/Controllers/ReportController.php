@@ -16,6 +16,11 @@ class ReportController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        if ($user && ($user->hasRole(['Technician', 'Subcontractor / Vendor']) || $user->hasRole('Store Manager'))) {
+            abort(403, 'Unauthorized access to Executive Financial Reports.');
+        }
+
         $ticketStats = [
             'total' => Ticket::count(),
             'open' => Ticket::where('status', 'Open')->count(),

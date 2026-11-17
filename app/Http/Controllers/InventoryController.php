@@ -10,6 +10,11 @@ class InventoryController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        if ($user && ($user->hasRole(['Technician', 'Subcontractor / Vendor']) || $user->hasRole('Store Manager'))) {
+            abort(403, 'Unauthorized access to Inventory Management.');
+        }
+
         $parts = SparePart::with('supplier')->orderBy('category')->orderBy('name')->get();
         $suppliers = Supplier::orderBy('name')->get();
         $lowStockCount = $parts->filter(fn ($p) => $p->isLowStock())->count();

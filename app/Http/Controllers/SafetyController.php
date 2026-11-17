@@ -12,6 +12,11 @@ class SafetyController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        if ($user && ($user->hasRole(['Technician', 'Subcontractor / Vendor']) || $user->hasRole('Store Manager'))) {
+            abort(403, 'Unauthorized access to Safety Incident Logs.');
+        }
+
         $incidents = SafetyIncident::with(['location', 'ticket', 'reporter'])->latest('incident_date')->paginate(15);
         $locations = ClientLocation::orderBy('name')->get();
         $tickets = Ticket::latest()->take(30)->get();
