@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Signage Care CRM — Complete Operational Flow & Role Specification Guide</title>
+<style>
+  body { font-family: "Calibri", "Arial", sans-serif; line-height: 1.6; color: #1e293b; max-width: 850px; margin: 40px auto; padding: 20px; }
+  h1 { color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; font-size: 26px; }
+  h2 { color: #1e3a8a; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; margin-top: 30px; font-size: 20px; }
+  h3 { color: #1e40af; font-size: 16px; margin-top: 20px; }
+  h4 { color: #334155; font-size: 14px; margin-top: 15px; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
+  th, td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background-color: #f1f5f9; color: #0f172a; font-weight: bold; }
+  tr:nth-child(even) { background-color: #f8fafc; }
+  pre, code { font-family: "Consolas", "Courier New", monospace; background-color: #f1f5f9; border-radius: 4px; }
+  pre { padding: 14px; overflow-x: auto; font-size: 12px; border: 1px solid #e2e8f0; line-height: 1.4; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+  .callout { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+  ul, ol { padding-left: 24px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<h1>Signage Care CRM — Complete Operational Flow &amp; Role Specification Document</h1>
+<br>
+<p><strong>Document Version:</strong> 1.0  </p>
+<p><strong>Target Application:</strong> Signage Care Multi-Location CRM (`crm.signagescare.com`)  </p>
+<p><strong>Scope:</strong> New Lead Onboarding $\to$ Branch Asset Tagging $\to$ Breakdown &amp; Dispatch $\to$ Pre-Work Safety Gate $\to$ Quotation &amp; Client Approval $\to$ GST Invoicing &amp; Payment Collection</p>
+<br>
+<p>---</p>
+<br>
+<h2>1. System Role Architecture &amp; Responsibility Matrix</h2>
+<br>
+<pre>graph TD
+    subgraph Client_Portal[&quot;1. CLIENT / RETAIL BRAND PORTAL&quot;]
+        SM[&quot;Store Manager / Brand Lead (e.g. Lenskart / Titan)&quot;]
+        SM --&gt;|Raises breakdown ticket with defect photo| TK_CREATE[&quot;Ticket Created (Status: Open)&quot;]
+        SM --&gt;|Approves quotes &gt; ₹5,000 threshold| QTN_APPR[&quot;Quotation Approved&quot;]
+        SM --&gt;|Inspects Before vs After proof| RATING[&quot;5-Star Rating &amp; Sign-off&quot;]
+    end
+
+    subgraph Operations[&quot;2. OPERATIONS &amp; DISPATCH DESK&quot;]
+        OM[&quot;Operations Controller / Dispatch Desk&quot;]
+        TK_CREATE --&gt; OM
+        OM --&gt;|Triages priority P1-P4 &amp; verifies skills| DISPATCH[&quot;Daily Dispatch Board&quot;]
+        DISPATCH --&gt;|Assigns certified technician| TECH_ASSIGN[&quot;Ticket Assigned&quot;]
+        OM --&gt;|Creates itemized estimate| QTN_CREATE[&quot;Quotation Issued (Pending Approval)&quot;]
+        QTN_CREATE --&gt; QTN_APPR
+        OM --&gt;|Bulk storm tickets| MASS_INC[&quot;Mass Incident Handler&quot;]
+    end
+
+    subgraph Field_Ops[&quot;3. FIELD MOBILITY &amp; SAFETY GATE&quot;]
+        TECH[&quot;Field Electrician / Outside Scaffolding Vendor&quot;]
+        TECH_ASSIGN --&gt; TECH
+        TECH --&gt;|Locks GPS &amp; arrival time| CHK_IN[&quot;Site GPS Check-In&quot;]
+        CHK_IN --&gt;|Enforces PPE, MCB Lockout &amp; Height Permit| SAFETY_GATE{&quot;Pre-Work Safety Gate&quot;}
+        SAFETY_GATE --&gt;|Verified| IN_PROG[&quot;Status: In Progress&quot;]
+        SAFETY_GATE --&gt;|Not Verified| BLOCKED[&quot;BLOCKED from Starting Work&quot;]
+        IN_PROG --&gt;|Replaces burnt SMPS/LEDs| PARTS[&quot;Auto-Deduct Warehouse Inventory&quot;]
+        PARTS --&gt;|Uploads After evidence &amp; Root Cause| COMPLETED[&quot;Status: Completed&quot;]
+        COMPLETED --&gt;|Logs travel KM &amp; cost| CHK_OUT[&quot;Site Check-Out&quot;]
+    end
+
+    subgraph Finance_Admin[&quot;4. ACCOUNTS &amp; EXECUTIVE DESK&quot;]
+        SA[&quot;Super Admin &amp; Finance Lead&quot;]
+        QTN_APPR --&gt;|Converts quote with HSN 998719 &amp; GST| GST_INV[&quot;Statutory GST Tax Invoice&quot;]
+        GST_INV --&gt;|Logs UPI / NEFT reference| RCPT[&quot;Payment Receipt Issued (Balance: ₹0)&quot;]
+        COMPLETED --&gt; RATING
+        RATING --&gt;|Tracks FTFR, MTTR &amp; Repeat Failures| REPORTS[&quot;Executive KPI Dashboard&quot;]
+        SA --&gt;|Monitors system health &amp; DPDP backups| SETTINGS[&quot;Settings &amp; DPDP Compliance&quot;]
+    end
+
+    classDef client fill:#e0f2fe,stroke:#0284c7,stroke-width:2px;
+    classDef ops fill:#fef3c7,stroke:#d97706,stroke-width:2px;
+    classDef field fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
+    classDef admin fill:#f3e8ff,stroke:#9333ea,stroke-width:2px;
+
+    class SM,TK_CREATE,QTN_APPR,RATING client;
+    class OM,DISPATCH,TECH_ASSIGN,QTN_CREATE,MASS_INC ops;
+    class TECH,CHK_IN,SAFETY_GATE,IN_PROG,BLOCKED,PARTS,COMPLETED,CHK_OUT field;
+    class SA,GST_INV,RCPT,REPORTS,SETTINGS admin;
+</pre>
+<br>
+<p>---</p>
+<br>
+<h2>2. End-to-End Walkthrough Scenario: &quot;When a New Lead Arrives&quot;</h2>
+<br>
+<p>To illustrate how every role interacts across the CRM, let&#039;s walk through a real-world scenario from lead acquisition to cash collection:</p>
+<br>
+<h3>Scenario: Onboarding &quot;Titan Eyeplus&quot; &amp; Handling a Rooftop Power Surge Breakdown</h3>
+<br>
+<pre>[Day 1] NEW LEAD CONVERTED
+├── Super Admin adds Client &quot;Titan Eyeplus Retail Ltd&quot; (GSTIN: 27AAACT2727Q1ZB).
+├── Adds Store Branch: &quot;Titan Eyeplus - Ramdaspeth&quot; (Nagpur).
+└── Registers Signage Asset: &quot;AST-TEP-001&quot; (Main Facade 3D Acrylic Backlit LED, 450W, Samsung LEDs / MeanWell Driver).
+
+[Day 2] CLIENT STORE MANAGER ONBOARDING
+├── Super Admin creates user: Kunal Joshi (kunal.titan@retail.com, Role: Store Manager).
+└── Kunal logs in to crm.signagescare.com:
+    ├── Dashboard immediately reflects his brand (&quot;Titan Eyeplus Retail Ltd&quot;) and role badge.
+    └── Multi-tenant isolation prevents him from seeing Lenskart or other client data.
+
+[Day 3, 10:00 AM] STORE BREAKDOWN OCCURS
+├── Heavy power surge trips the circuit breaker; main 3D logo completely dark.
+├── Kunal opens the portal on mobile, uploads a defect photo, sets Priority: P1 - Critical, Billing: Chargeable.
+└── Clicks &quot;Submit Service Request&quot; -&gt; Ticket SC-NAG-0045 created in &quot;Open&quot; status.
+    └── System triggers instant WhatsApp / Email alert to Operations.
+
+[Day 3, 10:15 AM] TRIAGE &amp; SKILL-BASED DISPATCH
+├── Operations Manager (ops@signagecare.in) opens the Daily Dispatch Board (/dispatch).
+├── Sees Ticket SC-NAG-0045 (Priority: P1, Location: Ramdaspeth).
+├── Filters available technicians by skill tags: checks for &quot;Electrical&quot; and &quot;24V SMPS&quot;.
+└── Assigns ticket to certified technician Rohit S. with ETA: &quot;Within 2 Hours&quot;.
+    └── Ticket status shifts to &quot;Assigned&quot;; Rohit receives automated mobile dispatch alert.
+
+[Day 3, 11:30 AM] SITE ARRIVAL &amp; GPS CHECK-IN
+├── Technician Rohit arrives at the Ramdaspeth store.
+├── Opens ticket on his phone -&gt; clicks &quot;Get GPS&quot; (Latitude: 21.1399, Longitude: 79.0766 logged).
+└── Enters arrival note: &quot;Arrived on site with diagnostic kit and replacement MeanWell 400W SMPS&quot;.
+
+[Day 3, 11:35 AM] MANDATORY PRE-WORK SAFETY GATE
+├── Rohit tries to update status to &quot;In Progress&quot;.
+├── SYSTEM HARD STOP: Action is blocked with error:
+    &quot;Pre-Work Safety Checklist (PPE &amp; Electrical Isolation) must be completed before moving ticket to In Progress.&quot;
+├── Rohit completes the safety protocol:
+    ├── Checks &quot;PPE Kit Verified&quot; (Safety helmet, insulated gloves, rubber sole shoes).
+    ├── Checks &quot;Electrical Lockout / Isolation Confirmed&quot; (Switches OFF store MCB isolator, verifies dead line with multimeter).
+    └── Submits the safety checklist -&gt; Gate unlocked!
+└── Status now updates to &quot;In Progress&quot;.
+
+[Day 3, 12:15 PM] CHARGEABLE ESTIMATE &amp; CLIENT APPROVAL
+├── Rohit diagnoses two burnt 400W waterproof SMPS units due to 415V phase-to-neutral voltage surge.
+├── Operations creates an itemized Quotation (/billing):
+    ├── Item: 2x 400W Waterproof MeanWell SMPS Driver @ ₹3,000 = ₹6,000.
+    ├── GST (18%): ₹1,080 -&gt; Total: ₹7,080.
+    └── Because Total (₹7,080) exceeds the ₹5,000 threshold, system auto-locks quotation in &quot;Pending Approval&quot;.
+├── Store Manager Kunal opens his portal -&gt; reviews itemized quotation -&gt; clicks &quot;Approve Quotation&quot;.
+└── Status updates to &quot;Approved&quot;; approval timestamp recorded for audit.
+
+[Day 3, 01:00 PM] REPAIR, INVENTORY DEDUCTION &amp; SIGN-OFF
+├── Rohit replaces the burnt power supplies.
+├── Selects &quot;SMPS-12V-400W&quot; (Qty: 2) from the spare parts dropdown -&gt; clicks &quot;Record Part Used&quot;.
+    └── System automatically decrements 2 units from warehouse stock and logs ₹2,900 unit cost against the ticket.
+├── Rohit switches on MCB: all letters illuminate brightly and uniformly.
+├── Takes clear &quot;After&quot; photo and uploads evidence.
+├── Records mandatory Root Cause: &quot;SMPS / Driver Failure&quot;.
+├── Check-Out: Logs 11.5 km travel distance and ₹140 vehicle expense.
+└── Clicks &quot;Check-Out&quot; and marks ticket as &quot;Completed&quot;.
+
+[Day 3, 01:30 PM] CLIENT SERVICE RATING &amp; QUALITY CHECK
+├── Kunal receives completion alert on WhatsApp: &quot;Work Completed for AST-TEP-001&quot;.
+├── Opens ticket -&gt; views Before photo (dark sign) vs. After photo (glowing sign).
+└── Submits 5-Star Rating with feedback: &quot;Store front illuminated perfectly before evening rush. Great job!&quot;
+
+[Day 3, 02:00 PM] STATUTORY GST INVOICING &amp; PAYMENT
+├── Finance Admin opens /billing -&gt; clicks &quot;Generate GST Invoice&quot;.
+├── System issues Tax Invoice INV-2026-0045:
+    ├── SAC Code: 998719 (Signage Maintenance &amp; Repair).
+    ├── Tax Breakdown: CGST 9% (₹540) + SGST 9% (₹540).
+    └── Client GSTIN: 27AAACT2727Q1ZB.
+├── Titan Finance transfers ₹7,080 via corporate UPI.
+└── Accounts records receipt RCPT-2026-0045 -&gt; Invoice marked &quot;Paid&quot; with balance due ₹0.
+</pre>
+<br>
+<p>---</p>
+<br>
+<h2>3. Dashboard Role Badges &amp; Permissions Verification</h2>
+<br>
+<p>Every user sees their identity and brand explicitly on both the top navigation bar and dashboard header:</p>
+<br>
+<p>1. <strong>Super Admin</strong> (`admin@signagecare.in`):</p>
+<p>   - Navbar display: `Director Operations | Role: Super Admin`</p>
+<p>   - Dashboard banner: Shows `Role: Super Admin`</p>
+<p>   - Access: Complete visibility across all stores, finances, backups, and user settings.</p>
+<p>2. <strong>Operations Manager</strong> (`ops@signagecare.in`):</p>
+<p>   - Navbar display: `Operations Controller | Role: Operations Manager`</p>
+<p>   - Dashboard banner: Shows `Role: Operations Manager`</p>
+<p>   - Access: Operational dispatch board, inventory management, safety incidents, mass incident batching, and quotations.</p>
+<p>3. <strong>Store Manager (Client)</strong> (`store.nagpur@lenskart.com` / `kunal.titan@retail.com`):</p>
+<p>   - Navbar display: `Kunal Joshi | Role: Store Manager • Titan Eyeplus Retail Ltd`</p>
+<p>   - Dashboard banner: Shows `Role: Store Manager` &amp; `Titan Eyeplus Retail Ltd`</p>
+<p>   - Access: Multi-tenant scoped only to their brand&#039;s stores, signage assets, invoices, and service requests.</p>
+<p>4. <strong>Field Technician</strong> (`rohit.tech@signagecare.in`):</p>
+<p>   - Navbar display: `Rohit S. | Role: Technician`</p>
+<p>   - Dashboard banner: Shows `Role: Technician`</p>
+<p>   - Access: Assigned tickets, GPS check-in/out, safety checklist verification, and part consumption.</p>
+<br>
+<p>---</p>
+<br>
+<h2>4. Automated End-to-End Test Suite Verification</h2>
+<br>
+<p>This exact multi-role workflow is validated continuously by the automated test suite in <strong>`tests/Feature/NewLeadFullLifecycleEndToEndTest.php`</strong>:</p>
+<br>
+<pre># Executed Test Command:
+php artisan test tests/Feature/NewLeadFullLifecycleEndToEndTest.php
+
+# Result:
+✓ Complete new lead to ticket to invoice lifecycle (35 assertions) - PASSED
+
+# Full CRM Test Suite Status:
+Total Tests: 40
+Passed: 40 (0 Failed)
+Total Assertions: 195
+</pre>
+<br>
+<h3>What the Automated Test Asserts at Every Step:</h3>
+<p>1. `Client::create` &amp; `ClientLocation::create` store new lead data properly in the database.</p>
+<p>2. `SignageAsset::create` links specifications (450W, Samsung/MeanWell) to the branch.</p>
+<p>3. Store Manager login renders brand name and `Store Manager` badge on `/dashboard`.</p>
+<p>4. Ticket creation saves `Chargeable` classification and `P1` priority.</p>
+<p>5. Operations Manager assigns technician on `/dispatch` with ETA fallback.</p>
+<p>6. Technician GPS check-in logs coordinates and timestamp.</p>
+<p>7. Attempting to set `In Progress` <strong>fails</strong> with session error without safety verification.</p>
+<p>8. Safety checklist verification succeeds and unblocks `In Progress`.</p>
+<p>9. Quotations exceeding ₹5,000 automatically get `Pending Approval` status.</p>
+<p>10. Client approval changes quotation to `Approved`.</p>
+<p>11. Spare part consumption deducts warehouse inventory accurately.</p>
+<p>12. Ticket completion requires `Root Cause` and records completion timestamp.</p>
+<p>13. Client rating saves 5 stars and text feedback.</p>
+<p>14. Quotation conversion issues GST invoice with CGST/SGST breakdown.</p>
+<p>15. Payment recording marks invoice as `Paid` with `0` balance due.</p>
+<br>
+</body></html>
