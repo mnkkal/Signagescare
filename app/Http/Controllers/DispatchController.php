@@ -14,6 +14,11 @@ class DispatchController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
+        if ($user && ($user->hasRole(['Technician', 'Subcontractor / Vendor']) || $user->hasRole('Store Manager'))) {
+            abort(403, 'Unauthorized access to Technician Dispatch Board.');
+        }
+
         $selectedDate = $request->input('date', now()->toDateString());
 
         $technicians = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Technician', 'Subcontractor / Vendor']))

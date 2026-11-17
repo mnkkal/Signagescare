@@ -53,6 +53,11 @@ class SignageCareSeeder extends Seeder
             'view reports',
             'manage sop projects',
             'verify sop checklists',
+            'view dispatch board',
+            'manage inventory',
+            'manage safety',
+            'manage billing',
+            'manage settings',
             'manage users',
             'view audit logs',
         ];
