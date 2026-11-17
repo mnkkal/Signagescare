@@ -191,11 +191,12 @@
                                 {{ strtoupper(substr(Auth::user()->name ?? 'SK', 0, 2)) }}
                             </div>
                             <div class="hidden md:block">
-                                <div class="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors leading-tight truncate max-w-[120px]">
+                                <div class="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors leading-tight truncate max-w-[140px]">
                                     {{ Auth::user()->name ?? 'Store Manager' }}
                                 </div>
-                                <div class="text-[11px] text-slate-400 leading-tight truncate max-w-[120px]">
-                                    {{ Auth::user()->client->name ?? 'Lenskart Nagpur' }}
+                                <div class="text-[11px] text-cyan-300 font-semibold leading-tight truncate max-w-[140px]">
+                                    {{ Auth::user()->getRoleNames()->first() ?? 'User' }}
+                                    @if(Auth::user()->client) &bull; {{ Auth::user()->client->name }} @endif
                                 </div>
                             </div>
                             <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -8,9 +8,21 @@
             <div class="absolute right-20 top-0 w-80 h-80 bg-cyan-400/10 rounded-full blur-2xl pointer-events-none"></div>
 
             <div class="relative z-10 max-w-3xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-cyan-300 text-xs font-semibold mb-3">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                    Signage Care Operations Hub
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-cyan-300 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        Signage Care Operations Hub
+                    </div>
+                    @auth
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/10 border border-white/20 text-white">
+                            Role: {{ Auth::user()->getRoleNames()->first() ?? 'Authorized User' }}
+                        </span>
+                        @if(Auth::user()->client)
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 border border-cyan-400/30 text-cyan-300">
+                                {{ Auth::user()->client->name }}
+                            </span>
+                        @endif
+                    @endauth
                 </div>
                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-2 leading-tight">
                     One Brand. Multiple Locations.<br />

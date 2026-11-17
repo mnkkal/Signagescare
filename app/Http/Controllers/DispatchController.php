@@ -49,8 +49,8 @@ class DispatchController extends Controller
 
         $ticket->update([
             'assigned_technician_id' => $validated['assigned_technician_id'],
-            'eta_date' => $validated['eta_date'] ?? now()->toDateString(),
-            'eta_display' => $validated['eta_date'] ? \Carbon\Carbon::parse($validated['eta_date'])->format('d M') : 'Today',
+            'eta_date' => !empty($validated['eta_date']) ? $validated['eta_date'] : now()->toDateString(),
+            'eta_display' => !empty($validated['eta_date']) ? \Carbon\Carbon::parse($validated['eta_date'])->format('d M') : 'Today',
             'status' => $ticket->status === 'Open' ? 'Assigned' : $ticket->status,
             'first_response_at' => $ticket->first_response_at ?? now(),
         ]);
